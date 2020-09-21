@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+
+<html>
+
+
+
+    <head>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="Semantic-UI-CSS-master/semantic.min.css">
+        <script  src="Semantic-UI-CSS-master/semantic.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    </head>
+
+<body>
+    <div class="row" style="background-color:white;">
+        <div class="col-md-2">
+            <img class="img-fluid" src="data-now.png">
+        </div>
+    </div>
+
+    <div style="background-color:grey;">
+        <div class="ui padded grid" style="background-image: url('bg.png');">
+
+            <div class="five wide column"></div>
+            <div class="six wide column grey">
+
+                 <div class="item middle aligned content">
+                <form >
+               <label>Nome da Variável</label>
+               <div>
+                <div  class="ui input focus">
+                    <input value="cores"  id="nomeVariavel"  > 
+                </div>
+            </div>
+
+                <div class="p-3">
+                    <label style="font-weight: bold;"> Entre com os dados separados por ponto e vírgula(;) </label>
+                 <div>
+                    <div class="ui input">
+                        <input value="rosa;lilás;lilás;preto;preto"  id="dados" name="dados" placeholder="dado um; dado dois; dado um; dado três"
+                            >
+                    </div>
+                </div>
+
+                    <div>
+                        <label style="font-weight: bold;">Tipo de variável</label>
+
+                        <div>
+                        <select id="tipoVariavel" name="tipoVariavel" class="ui dropdown">
+                             <option value="">escolher</option>
+                            <option selected value="nominal">qualitativa nominal</option>
+                            <option value="ordinal">qualitativa ordinal</option>
+                            <option value="discreta">quantitativa discreta</option>
+                            <option value="continua">quantitativa contínua</option>
+
+
+
+                        </select>
+                    </div>
+                    </div>
+
+                    <div class="text-center">
+                        <label>amostra</label>
+                        <input name="tipo" type="radio">
+
+                        <label>população</label>
+                        <input name="tipo" type="radio">
+                    </div>
+
+                    <div class="p-2">
+                        <input type="file">
+                    </div>
+
+                    <button type="button" onclick="calcular()" class="ui button">calcular <i class="fa fa-bar-chart p-1"
+                            aria-hidden="true"></i> </button>
+                </div>
+            </form>
+                </div>
+            </div>
+
+            <div class="five wide column"></div>
+
+
+
+        </div>
+    </div>
+
+    <div class="ui padded grid">
+
+      <div class="six wide column">
+        <div id="tabela" style="display: none;">
+
+            <table class="ui celled table">
+                <thead>
+                  <tr><th id="thNomeVariavel"></th>
+                  <th>frequencia (fi)</th>
+                  <th>frequencia(%)</th>
+                  <th>frequencia(fac)</th>
+                  <th>frequencia(fac%)</th>
+
+                </tr></thead>
+                <tbody id="tbody">
+                
+                
+                </tbody>
+              </table>
+
+              <div>
+                  <div class="ui small header"> 
+                      medidas de tendência central
+                  </div>
+                  <div>
+                   <div> <b>moda: </b>  <span id="moda"></span></div> 
+                   <div> <b>média: </b>  <span id="media"></span></div> 
+                   <div>  <b>mediana: </b>  <span id="mediana"></span></div> 
+
+
+                  </div>
+              </div>
+
+    
+        </div>
+      </div>
+
+      <div class="ten wide column">
+
+        <div>
+
+            <div class="ui large header" >Visualização Gráfica</div>
+    
+            <canvas  id="myChart"></canvas>
+    
+        
+    
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+
+
+
+  
+
+    <script>
+
+
+        var nomeVariavel = "";
+        var tbody = $('#tbody');
+      //  var dados = $('#dados').val();
+      
+
+        window.onload = function(){
+    $('.ui.dropdown').dropdown();
+};
+
+      function calcular(){
+           nomeVariavel = $('#nomeVariavel').val();
+
+           var frequencia = Array();
+
+           $('#tabela').css("display", "block");
+
+           $('#thNomeVariavel').text(nomeVariavel);
+
+            var dados = $('#dados').val();
+
+           var dadosSplit = dados.split(";");
+           var frequencia = Array();
+           var dadosUnicos = Array();
+           
+           var tr
+
+            for(var i = 0; i < dadosSplit.length; i++){
+              
+            if(dadosUnicos.includes(dadosSplit[i])){
+            
+               var valor =  $('#' + dadosSplit[i]).find("td:eq(1)").text();
+                 $('#' + dadosSplit[i]).find("td:eq(1)").text(parseInt(valor) + 1);
+
+
+            }else{
+                dadosUnicos.push(dadosSplit[i]); //verifica se o valor foi encontrado antes.
+                $('#tbody').append("<tr " + "id='" + dadosSplit[i] + "'>"  + "<td>" + dadosSplit[i] + "</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>");
+
+            }
+
+
+
+            }
+
+           organizarDados();  
+
+           calcularPorcentagemFrequencia(dadosSplit);
+
+      calcularFrequenciaAcumulada(dadosUnicos);
+
+           construirGrafico(dadosUnicos);
+
+           calcularModa(dadosUnicos);
+           calcularMedia();
+           calcularMediana();
+
+     }
+
+     function organizarDados(){
+
+
+
+     }
+
+     function  calcularPorcentagemFrequencia(dadosSplit){
+
+        var fac = 0;
+
+
+         for(var j = 0; j < dadosSplit.length; j++  )
+         {
+
+         var valor =  $('#' + dadosSplit[j]).find("td:eq(1)").text();
+
+         var porcentagem = (parseInt(valor) * 100) / dadosSplit.length
+        
+
+
+        $('#' + dadosSplit[j]).find("td:eq(2)").text(porcentagem);
+          
+              
+          
+
+              
+              
+              }
+            }
+
+            function construirGrafico(dadosSplit){
+
+                var nomesVariaveis = Array();
+                var valoresVariaveis = Array();
+                var cores = Array();
+                var valorCor = 40;
+
+                for(var j = 0; j < dadosSplit.length; j++  )
+         {
+
+             valorCor += 40;
+         var valor =  $('#' + dadosSplit[j]).find("td:eq(0)").text();
+         var valorValor = $('#' + dadosSplit[j]).find("td:eq(1)").text();
+             
+              nomesVariaveis.push(valor);
+              valoresVariaveis.push(valorValor);
+              cores.push('rgb(' + '255' + ', '  + valorCor +   ', 132)');
+
+
+              
+              }
+
+              console.log(cores);
+                       
+              var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'pie',
+
+    // The data for our dataset
+    data: {
+        labels: nomesVariaveis,
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: cores,
+            borderColor: 'rgb(255, 99, 132)',
+            data: valoresVariaveis
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+            }
+
+            var moda = "";
+
+
+            function calcularModa(dadosSplit){
+
+                
+                var possuiModa = false;
+               var valorAnterior =  parseInt($('#' + dadosSplit[0]).find("td:eq(1)").text());
+               var maiorValor = parseInt(valorAnterior);
+
+                for(var j = 1; j < dadosSplit.length; j++  )
+         {
+            
+               var fi = parseInt($('#' +  dadosSplit[j]).find("td:eq(1)").text());
+         
+                 if(fi != valorAnterior){
+
+                    alert(fi + " " + valorAnterior + " j=" + j);
+                     possuiModa = true;
+                 }
+                 else{
+                    alert(fi + " " + valorAnterior + " j=" + j);
+
+                 }
+                 
+                 
+                 valorAnterior = parseInt($('#' +  dadosSplit[j - 1]).find("td:eq(1)").text());
+
+
+                 if(fi> maiorValor){
+                     maiorValor = fi;
+                 }
+              
+              }
+
+              procurarModa(maiorValor, dadosSplit);
+
+              if(possuiModa)
+              {
+                $("#moda").text( moda);
+
+
+              }
+              else{
+
+                $("#moda").text("não possui moda");
+
+
+              }
+                 
+
+            }
+
+
+            function procurarModa(maiorValor, dadosSplit){
+
+                for(var j = 0; j < dadosSplit.length; j++  )
+         {
+
+                var fi =  $('#' + dadosSplit[j]).find("td:eq(1)").text();
+         
+               if(parseInt(fi) == maiorValor ){
+
+                  moda += " " +    $('#' + dadosSplit[j]).find("td:eq(0)").text();
+
+               }
+
+              
+              }
+                
+
+            }
+
+           function calcularMedia(){
+
+             var tipoVariavel = $('#tipoVariavel').val();
+
+             if(tipoVariavel == "ordinal" || tipoVariavel == "nominal"){
+
+                  $('#media').text("não possui média")
+
+             }
+
+            }
+
+            function calcularMediana(){
+
+                var tipoVariavel = $('#tipoVariavel').val();
+
+if(tipoVariavel == "ordinal" || tipoVariavel == "nominal"){
+
+     $('#mediana').text("não possui mediana")
+
+}
+
+            }
+
+
+            function calcularFrequenciaAcumulada(dadosSplit){
+
+              
+                for(var j = 0; j < dadosSplit.length; j++  )
+         {
+
+    
+          
+              
+           if(j != 0){
+
+            var facAnterior  = parseInt( $('#' + dadosSplit[j - 1]).find("td:eq(3)").text());
+            var facAtual  = parseInt( $('#' + dadosSplit[j]).find("td:eq(1)").text());
+
+            var facPorAnterior  = parseInt( $('#' + dadosSplit[j - 1]).find("td:eq(4)").text());
+            var facPorAtual  = parseInt( $('#' + dadosSplit[j]).find("td:eq(2)").text());
+
+               
+                    $('#' + dadosSplit[j]).find("td:eq(3)").text( facAnterior + facAtual  );
+                    $('#' + dadosSplit[j]).find("td:eq(4)").text( facPorAtual + facPorAnterior  );
+
+           }  else{
+               //na primeira vez, a frequencia acumulada é o valor da frequencia simples
+            $('#' + dadosSplit[j]).find("td:eq(3)").text( $('#' + dadosSplit[j]).find("td:eq(1)").text( ));
+            $('#' + dadosSplit[j]).find("td:eq(4)").text( $('#' + dadosSplit[j]).find("td:eq(2)").text( ));
+
+           }
+
+              
+              
+              }
+
+        }
+
+    </script>
+
+   
+
+</body>
+
+</html>
