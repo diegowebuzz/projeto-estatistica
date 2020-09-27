@@ -32,7 +32,7 @@
                <label>Nome da Variável</label>
                <div>
                 <div  class="ui input focus">
-                    <input value="cores"  id="nomeVariavel"  > 
+                    <input value="cores"  value="número carros" id="nomeVariavel"  > 
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
                     <label style="font-weight: bold;"> Entre com os dados separados por ponto e vírgula(;) </label>
                  <div>
                     <div class="ui input">
-                        <input value="11;10;14;16;10;15;11;13"  id="dados" name="dados" placeholder="dado um; dado dois; dado um; dado três"
+                        <input value="50;32;21;56;78;43;43"  id="dados" name="dados" placeholder="dado um; dado dois; dado um; dado três"
                             >
                     </div>
                 </div>
@@ -52,8 +52,8 @@
                         <select id="tipoVariavel" name="tipoVariavel" class="ui dropdown">
                              <option value="">escolher</option>
                             <option  value="nominal">qualitativa nominal</option>
-                            <option value="ordinal">qualitativa ordinal</option>
-                            <option value="discreta">quantitativa discreta</option>
+                            <option  value="ordinal">qualitativa ordinal</option>
+                            <option selected value="discreta">quantitativa discreta</option>
                             <option  value="continua">quantitativa contínua</option>
 
 
@@ -74,7 +74,7 @@
                         <input type="file">
                     </div>
 
-                    <button type="button" onclick="calcular()" class="ui button">calcular <i class="fa fa-bar-chart p-1"
+                    <button type="button" onclick="prepararCalcular()" class="ui button">calcular <i class="fa fa-bar-chart p-1"
                             aria-hidden="true"></i> </button>
 
                             <button type="button" onclick="limparCampos()" class="ui orange button">limpar campos <i class="fa fa-bar-chart p-1"
@@ -117,7 +117,7 @@
                   </div>
                   <div>
                    <div> <b>moda: </b>  <span id="moda"></span></div> 
-                   <div> <b>média: </b>  <span id="media"></span></div> 
+                   <div> <b>média: </b>  <span id="media">não possui média</span></div> 
                    <div>  <b>mediana: </b>  <span id="mediana"></span></div> 
 
 
@@ -153,32 +153,83 @@
 
     <script>
 
-
         var nomeVariavel = "";
         var tbody = $('#tbody');
-        var numeroElementos = 0;
-      //  var dados = $('#dados').val();
-      
+        var dados  = "";
+        var dadosParsados = [];
+        var dadosUnicos = [];
+        var dadosSplit = [];
+        var arrSet = new Set();
+
+       var limiteInferior;
+      var freqAcumuladaAnterior = 0;
+      var agrupamento;
+
+
+var numeroElementos = 0;
+
 
         window.onload = function(){
             $('.ui.dropdown').dropdown();
+        
+       
 };
 
+       function prepararCalcular() { // faz preparações nos dados, caso seja necessário, antes de calcular
+
+
+        tipoVariavel = $('#tipoVariavel').val();
+        dados = $('#dados').val();
+
+dadosSplit = dados.split(";");
+dadosParsados = dadosSplit;
+var set = new Set(dadosSplit);
+         arrSet = Array.from(set);
+
+         
+for(var i = 0; i < arrSet.length; i++){
+   
+   $('#divOrdemOrdinais').append(`<div class='ui input'><input id="ordem_${i}"  placeholder='posição da variável ${arrSet[i]}'></div>`);
+  
+  
+  }
+
+       
+         if(tipoVariavel == "ordinal"){
+
+          $('.ui.modal').modal(   {onApprove : ordenarOrdinal }).modal('show');
+
+                 
+
+         }else{
+          calcular();
+
+         }
+
+
+       }
+    
+
       function calcular(){
+
+
+
 
             limparTabela();
 
            nomeVariavel = $('#nomeVariavel').val();
-           tipoVariavel = $('#tipoVariavel').val();
 
            if(tipoVariavel == "discreta"){
                   
                   gerarTabelaDiscreta();
 
+
            }
            if( tipoVariavel == "continua" ){
 
                 gerarTabelaContinua();
+                calcularMedianaQuantitativaContinua();
+
 
            }
            if(tipoVariavel == "ordinal" || tipoVariavel == "nominal"){
@@ -189,16 +240,14 @@ $('#resultado').css("display", "block");
 
 $('#thNomeVariavel').text(nomeVariavel);
 
- var dados = $('#dados').val();
 
-var dadosSplit = dados.split(";");
 
  numeroElementos = dadosSplit.length;
 
 
 
 var frequencia = Array();
-var dadosUnicos = Array();
+ dadosUnicos = Array();
 
 var tr
 
@@ -228,9 +277,17 @@ calcularFrequenciaAcumulada(dadosUnicos);
 
 construirGrafico(dadosUnicos);
 
-calcularModa(dadosUnicos);
-calcularMedia(dadosUnicos);
-calcularMediana(dadosUnicos);
+//calcularModa(dadosUnicos);
+
+//calcularMediana(dadosUnicos);
+
+calcularModa(dadosUnicos)
+
+if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
+    calcularMedia(dadosUnicos);
+
+}
+
 
            }
 
@@ -257,11 +314,12 @@ calcularMediana(dadosUnicos);
          var porcentagem = (parseInt(valor) * 100) / dadosSplit.length
         
 
+         alert(" teste= " + (parseInt(valor) * 100) / 37);
+
 
         $('#' + dadosSplit[j]).find("td:eq(2)").text(porcentagem);
           
               
-          
 
               
               
@@ -325,53 +383,7 @@ calcularMediana(dadosUnicos);
             var moda = "";
 
 
-            function calcularModa(dadosSplit){
-
-                
-                var possuiModa = false;
-               var valorAnterior =  parseInt($('#' + dadosSplit[0]).find("td:eq(1)").text());
-               var maiorValor = parseInt(valorAnterior);
-
-                for(var j = 1; j < dadosSplit.length; j++  )
-         {
-            
-               var fi = parseInt($('#' +  dadosSplit[j]).find("td:eq(1)").text());
-         
-                 if(fi != valorAnterior){
-
-                     possuiModa = true;
-                 }
-                 else{
-
-                 }
-                 
-                 
-                 valorAnterior = parseInt($('#' +  dadosSplit[j - 1]).find("td:eq(1)").text());
-
-
-                 if(fi> maiorValor){
-                     maiorValor = fi;
-                 }
-              
-              }
-
-              procurarModa(maiorValor, dadosSplit);
-
-              if(possuiModa)
-              {
-                $("#moda").text( moda);
-
-
-              }
-              else{
-
-                $("#moda").text("não possui moda");
-
-
-              }
-                 
-
-            }
+   
 
 
             function procurarModa(maiorValor, dadosSplit){
@@ -409,6 +421,7 @@ calcularMediana(dadosUnicos);
              }
              else{
 
+
                 var soma = 0;;
 
                 for(var j = 0; j < dadosUnicos.length; j++  )
@@ -436,16 +449,18 @@ calcularMediana(dadosUnicos);
 
                var mediana = "";
                
-                   var par = (numeroElementos % 2 == 0);
+                   var par = (numeroElementos % 2 == 0); //verifica se o número de elementos é par
 
-                   if(par){
+                   if(par){  //se for par pego as duas posições centrais, se for impar pego só o único elemento central
 
                     var posicao1 = numeroElementos / 2;  
                     var posicao2 = posicao1 + 1;
-                    
+
                     for(var j = 0; j < dadosUnicos.length; j++  )
          {
-
+ 
+            if( tipoVariavel == "discreta")
+          {
                 var fac =  parseInt($('#' + dadosUnicos[j]).find("td:eq(3)").text());
          
                       if(!(posicao1 > fac || posicao1 < fac )){
@@ -458,12 +473,19 @@ calcularMediana(dadosUnicos);
 
                          }
 
-                      }   
+                      }
+          }else{
+
+            $('#mediana').text( dadosParsados[ ((dadosParsados.length ) / 2) - 1  ] + " " +  dadosParsados[ ((dadosParsados.length ) / 2)  ]);
+
+          }
               
               }
 
                      
                    }else{
+                    if(tipoVariavel == "continua" || tipoVariavel == "discreta")
+              {
 
                        var posicao = numeroElementos / 2;  
                        var valorCentral = Math.ceil(posicao);
@@ -480,6 +502,12 @@ calcularMediana(dadosUnicos);
 
                       }   
               
+              }
+              }else{
+                  
+                $('#mediana').text($('#' +  dadosParsados[ (dadosParsados.length - 1) / 2  ]).find("td:eq(0)").text());
+
+
               }
 
 
@@ -527,6 +555,8 @@ calcularMediana(dadosUnicos);
 
         function gerarTabelaDiscreta(){
 
+alert("tabela discreta");
+ 
             var frequencia = Array();
 
 $('#resultado').css("display", "block");
@@ -562,6 +592,12 @@ var tr
 
  }
 
+
+
+
+
+ }
+
  organizarDados();  
 
 calcularPorcentagemFrequencia(dadosSplit);
@@ -571,12 +607,10 @@ calcularFrequenciaAcumulada(dadosUnicos);
 construirGrafico(dadosUnicos);
 
 calcularModa(dadosUnicos);
+
+
 calcularMedia(dadosUnicos);
 calcularMediana(dadosUnicos);
-
-
-
- }
             
 
         }
@@ -608,7 +642,7 @@ amplitude = dadosSplit[dadosSplit.length - 1] - dadosSplit[0];
 numeroClasses =   Math.floor( Math.sqrt(dadosSplit.length));
 intervaloClasses = Math.floor( amplitude / numeroClasses);
 
-
+agrupamento = intervaloClasses;
 
  numeroElementos = dadosSplit.length;
 
@@ -659,7 +693,6 @@ var tr
               
               if(parseInt( $('#' + dadosUnicos[x]).find("td:eq(1)").text()) > maiorFrequencia ){
 
-                  alert(parseInt( $('#' + dadosUnicos[x]).find("td:eq(1)").text()) + " " + maiorFrequencia); 
                   maiorFrequencia = parseInt( $('#' + dadosUnicos[x]).find("td:eq(1)").text()) ;
                 valorInicialMaiorFrequencia = dadosUnicos[x];
               }
@@ -669,11 +702,9 @@ var tr
 
           media = media / dadosSplit.length;
 
-           alert(valorInicialMaiorFrequencia);
 
            $('#media').text(media);
            $('#moda').text( (valorInicialMaiorFrequencia + valorInicialMaiorFrequencia + intervaloClasses) / 2  );
-           calcularMediana(dadosUnicos);
            organizarDados();  
 
 calcularPorcentagemFrequencia(dadosSplit);
@@ -698,7 +729,7 @@ construirGrafico(dadosUnicos);
       function limparTabela(){
 
          $('tbody').empty();
-         $('#media').text("");
+         $('#media').text("não possui média");
          $('#mediana').text("");
          $('#moda').text("");
 
@@ -706,10 +737,135 @@ construirGrafico(dadosUnicos);
 
       }
 
+      function recuperarOrdem(){
+
+          
+
+      }
+
+      function ordenarOrdinal(){
+
+        var tabelaOrdenacao = [];
+        var novoDados = "";
+
+
+           for(var i = 0; i < arrSet.length; i++ ){
+
+
+               tabelaOrdenacao[i] =  parseInt( $('#ordem_' + i).val()) ;
+               
+           }
+
+           for(var i = 0; i < tabelaOrdenacao.length; i++ ){
+
+
+              var index = (tabelaOrdenacao.indexOf( i + 1))
+              
+
+               var reg = new RegExp(arrSet[index] + ";?", "g");
+              var numVezes =  (dados.match(reg || []).length); // conta quantas vezes a variável aparece na entrada do usuário
+
+               for(m = 0; m < numVezes; m++){
+                 
+                novoDados += arrSet[index] + ";"
+
+               }
+
+               if((i + 1) == tabelaOrdenacao.length){
+                  novoDados = novoDados.slice(0, -1) ; //tira o ultimo ponto e vírgula (;)
+               }
+
+          }
+
+          dados = novoDados;
+          dadosSplit = dados.split(";");
+          dadosParsados = dadosSplit;
+         
+         calcular();
+           
+           
+      }
+
+
+      function calcularModa(dadosUnicos){ //itero as linhas da tabela para checar as frequencias de maior valor
+
+
+  
+  var possuiModa = false;
+ var valorAnterior =  parseInt($('#' + dadosUnicos[0]).find("td:eq(1)").text()); //valor da primeira frequência
+ var maiorValor = parseInt(valorAnterior); //armazena a maior frequência até o momento
+
+
+  for(var j = 1; j < dadosUnicos.length; j++  )
+{
+
+ var fi = parseInt($('#' +  dadosUnicos[j]).find("td:eq(1)").text()); //coluna das frequencias (fi)
+
+   if(fi != valorAnterior){//se pelo menos uma fez há frequencias com valores diferentes, significa que tem moda
+
+       possuiModa = true;
+   }
+  
+   
+   
+   valorAnterior = parseInt($('#' +  dadosUnicos[j - 1]).find("td:eq(1)").text());
+
+
+   if(fi> maiorValor){
+       maiorValor = fi;
+   }
+
+}
+
+procurarModa(maiorValor, dadosUnicos);
+
+
+if(possuiModa)
+{
+  $("#moda").text( moda);
+
+
+}
+else{
+
+  $("#moda").text("não possui moda");
+
+
+}
+
+}
+
+
+  function calcularMedianaQuantitativaContinua(){
+     
+
+
+       // limiteInferior;
+     // var somatorioFI = dadosSplit.length / 2;
+      // freqAcumuladaAnterior = 0;
+
+     // var resultado = limiteInferior + ( (somatorioFI - freqAcumuladaAnterior) / freqAcumuladaAnterior ) * agrupamento;
+             
+          // $('#mediana').text(resultado);
+
+ }
+
 
     </script>
 
    
+<div class="ui modal">
+    <div class="header">Você escolheu uma variável qualitativa nominal, especifique a ordem</div>
+    <div class="content">
+      <div id="divOrdemOrdinais">
+
+      </div>
+    </div>
+    <div class="actions">
+      <div  class="ui approve positive button">Confirmar Ordem</div>
+      
+    </div>
+  </div>
 
 </body>
 
