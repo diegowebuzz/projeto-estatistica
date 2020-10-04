@@ -32,16 +32,17 @@
                <label>Nome da Variável</label>
                <div>
                 <div  class="ui input focus">
-                    <input value="cores"  value="número carros" id="nomeVariavel"  > 
+                    <input   value="cores" id="nomeVariavel"  > 
                 </div>
             </div>
 
                 <div class="p-3">
                     <label style="font-weight: bold;"> Entre com os dados separados por ponto e vírgula(;) </label>
                  <div>
-                    <div class="ui input">
-                        <input value="50;32;21;56;78;43;43"  id="dados" name="dados" placeholder="dado um; dado dois; dado um; dado três"
-                            >
+                    <div class="ui input"  data-tooltip="Erro de formação" data-position="right center">
+                        <input value="20;40;50;20;30;10;80;20;10;10;30;90;55;30;20;10;30;10;10;10;10" 
+                        
+                        id="dados" name="dados" data-variation="wide" placeholder="dado um; dado dois; dado um; dado três">
                     </div>
                 </div>
 
@@ -51,9 +52,9 @@
                         <div>
                         <select id="tipoVariavel" name="tipoVariavel" class="ui dropdown">
                              <option value="">escolher</option>
-                            <option  value="nominal">qualitativa nominal</option>
-                            <option  value="ordinal">qualitativa ordinal</option>
-                            <option selected value="discreta">quantitativa discreta</option>
+                            <option   value="nominal">qualitativa nominal</option>
+                            <option   value="ordinal">qualitativa ordinal</option>
+                            <option  selected value="discreta">quantitativa discreta</option>
                             <option  value="continua">quantitativa contínua</option>
 
 
@@ -64,10 +65,10 @@
 
                     <div class="text-center">
                         <label>amostra</label>
-                        <input name="tipo" type="radio">
+                        <input onclick="selecionarTipoDado('amostra')" name="tipoDado" type="radio">
 
                         <label>população</label>
-                        <input name="tipo" type="radio">
+                        <input onclick="selecionarTipoDado('populacao')"  checked  name="tipoDado" type="radio">
                     </div>
 
                     <div class="p-2">
@@ -90,9 +91,11 @@
 
         </div>
     </div>
-
+    <div>
+      <span> <b> Desvio Padrão:</b></span> <span id="dp"></span> <span><b>Coeficiente de Variação:</b></span> <span id="cv"></span>
+    </div>
     <div id="resultado" class="ui padded grid" style="display: none;">
-
+ 
       <div class="seven wide column">
         <div id="tabela" >
 
@@ -110,25 +113,54 @@
                 
                 </tbody>
               </table>
+              <div class="ui grid">
+                  <div class="eight wide column">
 
-              <div>
-                  <div class="ui small header"> 
-                      medidas de tendência central
+                    <div>
+                      <div class="ui small header"> 
+                          medidas de tendência central
+                      </div>
+                      <div>
+                       <div> <b>moda: </b>  <span id="moda"></span></div> 
+                       <div> <b>média: </b>  <span id="media">não possui média</span></div> 
+                       <div>  <b>mediana: </b>  <span id="mediana"></span></div> 
+    
+    
+                      </div>
                   </div>
-                  <div>
-                   <div> <b>moda: </b>  <span id="moda"></span></div> 
-                   <div> <b>média: </b>  <span id="media">não possui média</span></div> 
-                   <div>  <b>mediana: </b>  <span id="mediana"></span></div> 
 
+                  </div>
+                  <div class="eight wide column" >
+                  <div>medidas separatrizes</div>
 
+                    <div>
+                      <select id="medidaSeparatriz" class="ui dropdown">
+                        <option value="porcentil">porcentil</option>
+                        <option value="decil">decil</option>
+                        <option value="quartil" >quartil</option>
+                  
+                        <option value="quintil">quintil</option>
+                  
+                      </select> 
+                    </div>
+
+                    <div>
+                      <input  max="100" min="0"  id="range" type="range"> 
+                      <span id="valorAtualRane"></span>
+                      <div id="resultadoCalculoSeparatriz"></div>
+
+                    </div>
+                   
                   </div>
               </div>
+          
+          
 
     
         </div>
       </div>
 
-      <div class="eight wide column">
+      <div class="seven wide column">
 
         <div>
 
@@ -160,7 +192,8 @@
         var dadosUnicos = [];
         var dadosSplit = [];
         var arrSet = new Set();
-
+        var passoSeparatriz = 100;
+        var tipoDado = "populacao";
        var limiteInferior;
       var freqAcumuladaAnterior = 0;
       var agrupamento;
@@ -171,7 +204,62 @@ var numeroElementos = 0;
 
         window.onload = function(){
             $('.ui.dropdown').dropdown();
+
+            $('#dados').popup({  on: 'focus'});
+
+            $('.ui.separatriz.dropdown').dropdown();
+            $('#medidaSeparatriz').change(function(){
+                 var separatrizSelecionada =  $(this).val();
+
+                 if(separatrizSelecionada == "porcentil"){
+                    
+                    $('#range').attr('step', 1);
+                    $('#range').attr('min', 1);
+                    $('#range').attr('max', 99);
+
+
+                 }
+                 if(separatrizSelecionada == "decil"){
+                  $('#range').attr('step', 10);
+                  $('#range').attr('min', 10);
+                  $('#range').attr('max', 90);
+
+
+                   
+                  }
+                  if(separatrizSelecionada == "quintil"){
+
+                 $('#range').attr('step', 20);
+                 $('#range').attr('min', 20);
+                 $('#range').attr('max', 80);
+
+
+
+
+                }
+                  if(separatrizSelecionada == "quartil"){
+                    $('#range').attr('step', 25);
+                    $('#range').attr('min', 25);
+                    $('#range').attr('max', 75);
+
+
+
+                   
+                  }
+               
+
+
+
+            });
         
+
+        $('#range').change(function(){
+          $('#valorAtualRane').text($('#range').val());
+          $('#resultadoCalculoSeparatriz').text($('#range').val());
+
+          exibirMedidaSeparatriz( parseInt($('#range').val()) );
+
+        });
        
 };
 
@@ -179,7 +267,15 @@ var numeroElementos = 0;
 
 
         tipoVariavel = $('#tipoVariavel').val();
-        dados = $('#dados').val();
+        dados = $('#dados').val().trim().replaceAll(" ", "_").replaceAll("; ", ";").replaceAll(" ; ", ";");
+         var ultimoCaractere = dados.substr(dados.length - 1, 1);
+
+         if(ultimoCaractere == ";"){
+         dados =  dados.substr(0, dados.length - 1);
+         }
+ 
+
+
 
 dadosSplit = dados.split(";");
 dadosParsados = dadosSplit;
@@ -189,7 +285,7 @@ var set = new Set(dadosSplit);
          
 for(var i = 0; i < arrSet.length; i++){
    
-   $('#divOrdemOrdinais').append(`<div class='ui input'><input id="ordem_${i}"  placeholder='posição da variável ${arrSet[i]}'></div>`);
+   $('#divOrdemOrdinais').append(`<div> ${arrSet[i]} <div class='ui input'><input type="number" id="ordem_${i}"></div></div>`);
   
   
   }
@@ -222,16 +318,18 @@ for(var i = 0; i < arrSet.length; i++){
            if(tipoVariavel == "discreta"){
                   
                   gerarTabelaDiscreta();
-
+                   calcularDesvioPadrao();
 
            }
            if( tipoVariavel == "continua" ){
 
                 gerarTabelaContinua();
                 calcularMedianaQuantitativaContinua();
+                calcularDesvioPadrao();
 
 
            }
+
            if(tipoVariavel == "ordinal" || tipoVariavel == "nominal"){
 
             var frequencia = Array();
@@ -239,7 +337,6 @@ for(var i = 0; i < arrSet.length; i++){
 $('#resultado').css("display", "block");
 
 $('#thNomeVariavel').text(nomeVariavel);
-
 
 
  numeroElementos = dadosSplit.length;
@@ -271,17 +368,18 @@ var tr
 
 organizarDados();  
 
-calcularPorcentagemFrequencia(dadosSplit);
+calcularPorcentagemFrequencia(dadosUnicos);
 
 calcularFrequenciaAcumulada(dadosUnicos);
 
 construirGrafico(dadosUnicos);
 
 //calcularModa(dadosUnicos);
-
-//calcularMediana(dadosUnicos);
+calcularMediana(dadosUnicos);
 
 calcularModa(dadosUnicos)
+
+calcularDesvioPadrao();
 
 if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
     calcularMedia(dadosUnicos);
@@ -301,22 +399,23 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
 
      }
 
-     function  calcularPorcentagemFrequencia(dadosSplit){
+     function  calcularPorcentagemFrequencia(dadosUnicos){
 
         var fac = 0;
 
+        console.log("dadossplit");
+        console.log(dadosUnicos);
 
-         for(var j = 0; j < dadosSplit.length; j++  )
+
+         for(var j = 0; j < dadosUnicos.length; j++  )
          {
 
-         var valor =  $('#' + dadosSplit[j]).find("td:eq(1)").text();
+         var valor =  $('#' + dadosUnicos[j]).find("td:eq(1)").text();
 
-         var porcentagem = (parseInt(valor) * 100) / dadosSplit.length
+         var porcentagem = (parseFloat(valor) * 100) / dadosSplit.length
         
 
-
-
-        $('#' + dadosSplit[j]).find("td:eq(2)").text(porcentagem);
+        $('#' + dadosUnicos[j]).find("td:eq(2)").text(parseFloat(porcentagem).toFixed(2));
           
               
 
@@ -421,7 +520,7 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
              else{
 
 
-                var soma = 0;;
+                var soma = 0;
 
                 for(var j = 0; j < dadosUnicos.length; j++  )
          {
@@ -432,8 +531,7 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
                       
               
               }
-
-                        $('#media').text(soma / numeroElementos);
+                        $('#media').text(parseFloat(soma / numeroElementos).toFixed(2));
 
 
              }
@@ -445,72 +543,9 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
             }
 
             function calcularMediana(dadosUnicos){
+             
 
-               var mediana = "";
-               
-                   var par = (numeroElementos % 2 == 0); //verifica se o número de elementos é par
-
-                   if(par){  //se for par pego as duas posições centrais, se for impar pego só o único elemento central
-
-                    var posicao1 = numeroElementos / 2;  
-                    var posicao2 = posicao1 + 1;
-
-                    for(var j = 0; j < dadosUnicos.length; j++  )
-         {
- 
-            if( tipoVariavel == "discreta")
-          {
-                var fac =  parseInt($('#' + dadosUnicos[j]).find("td:eq(3)").text());
-         
-                      if(!(posicao1 > fac || posicao1 < fac )){
-                        
-                        $('#mediana').text($('#' + dadosUnicos[j]).find("td:eq(0)").text());
-
-
-                         if( parseInt($('#' + dadosUnicos[j]).find("td:eq(3)").text()) == posicao1 ){
-                            $('#mediana').append( " " + $('#' + dadosUnicos[j + 1]).find("td:eq(0)").text());
-
-                         }
-
-                      }
-          }else{
-
-            $('#mediana').text( dadosParsados[ ((dadosParsados.length ) / 2) - 1  ] + " " +  dadosParsados[ ((dadosParsados.length ) / 2)  ]);
-
-          }
-              
-              }
-
-                     
-                   }else{
-                    if(tipoVariavel == "continua" || tipoVariavel == "discreta")
-              {
-
-                       var posicao = numeroElementos / 2;  
-                       var valorCentral = Math.ceil(posicao);
-
-                       for(var j = 0; j < dadosUnicos.length; j++  )
-         {
-
-                var fac =  parseInt($('#' + dadosUnicos[j]).find("td:eq(3)").text());
-         
-                      if(!(valorCentral > fac || valorCentral < fac )){
-
-                        $('#mediana').text($('#' + dadosUnicos[j]).find("td:eq(0)").text());
-
-
-                      }   
-              
-              }
-              }else{
-                  
-                $('#mediana').text($('#' +  dadosParsados[ (dadosParsados.length - 1) / 2  ]).find("td:eq(0)").text());
-
-
-              }
-
-
-                   }
+               $('#mediana').text(calcularMedidaSeparatriz(50));
 
 
 
@@ -537,7 +572,7 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
 
                
                     $('#' + dadosSplit[j]).find("td:eq(3)").text( facAnterior + facAtual  );
-                    $('#' + dadosSplit[j]).find("td:eq(4)").text( facPorAtual + facPorAnterior  );
+                    $('#' + dadosSplit[j]).find("td:eq(4)").text(  parseFloat(facPorAtual + facPorAnterior).toFixed(2)  );
 
            }  else{
                //na primeira vez, a frequencia acumulada é o valor da frequencia simples
@@ -572,7 +607,7 @@ console.log(dadosSplit);
 
 
 var frequencia = Array();
-var dadosUnicos = Array();
+ dadosUnicos = Array();
 
 var tr
 
@@ -591,14 +626,13 @@ var tr
  }
 
 
-
-
+  
 
  }
 
  organizarDados();  
 
-calcularPorcentagemFrequencia(dadosSplit);
+calcularPorcentagemFrequencia(dadosUnicos);
 
 calcularFrequenciaAcumulada(dadosUnicos);
 
@@ -647,7 +681,7 @@ agrupamento = intervaloClasses;
 
 
 var frequencia = Array();
-var dadosUnicos = Array();
+ dadosUnicos = Array();
 
 var tr
 
@@ -703,13 +737,15 @@ var tr
 
            $('#media').text(media);
            $('#moda').text( (valorInicialMaiorFrequencia + valorInicialMaiorFrequencia + intervaloClasses) / 2  );
+           $('#mediana').text(calcularMedidaSeparatriz(50));
            organizarDados();  
 
-calcularPorcentagemFrequencia(dadosSplit);
+calcularPorcentagemFrequencia(dadosUnicos);
 
 calcularFrequenciaAcumulada(dadosUnicos);
 
 construirGrafico(dadosUnicos);
+
 
 
         }
@@ -838,6 +874,7 @@ else{
      
 
 
+
        // limiteInferior;
      // var somatorioFI = dadosSplit.length / 2;
       // freqAcumuladaAnterior = 0;
@@ -849,11 +886,178 @@ else{
  }
 
 
+ function exibirMedidaSeparatriz(porcentagem){
+
+
+
+
+    if(tipoVariavel == "ordinal" || tipoVariavel == "nominal" || tipoVariavel == "discreta"){
+
+    
+   $('#resultadoCalculoSeparatriz').text(calcularMedidaSeparatriz(porcentagem));
+    
+
+    }
+    else{
+       
+      
+
+
+   $('#resultadoCalculoSeparatriz').text(calcularMedidaSeparatriz(porcentagem));
+
+
+
+    }
+ }
+
+
+ function calcularDesvioPadrao(){
+
+     if(tipoVariavel == "nominal" || tipoVariavel == "ordinal"){
+       $('#dp').text("não aplicável");
+       $('#cv').text("não aplicável");
+     }else{
+        
+        var desvioPadrao = 0;
+        var variancia = 0;
+        var media = 0;
+        var somatorio = 0;
+        var media = parseFloat($('#media').text());
+        var sfi = 0;
+        var cv = 0;
+
+        for(var i = 0; i < dadosUnicos.length; i++){
+           
+           var x = 0;
+
+           if(tipoVariavel == "continua"){
+             var x1 = parseInt( $('#' + dadosUnicos[i]).find("td:eq(0)").text().substr(0, $('#' + dadosUnicos[i]).find("td:eq(0)").text().indexOf("|--") ));
+            var x2 = parseInt( $('#' + dadosUnicos[i]).find("td:eq(0)").text().substr($('#' + dadosUnicos[i]).find("td:eq(0)").text().indexOf("|--") + 3, $('#' + dadosUnicos[i]).find("td:eq(0)").text().length - 1));
+              x = (x1 + x2) / 2;
+
+           }else{
+             x = parseInt( $('#' + dadosUnicos[i]).find("td:eq(0)").text());
+
+           }
+             var fi = parseInt( $('#' + dadosUnicos[i]).find("td:eq(1)").text());
+             sfi += fi;
+             somatorio +=  (((x - media) * ((x - media)))  * fi);
+           
+           //alert("x - média " + (((x - media) * ((x - media)) ).toString()));
+
+
+              
+        }
+
+             if(tipoDado == "populacao")
+             {
+              variancia = somatorio / sfi;
+
+             }else{
+              variancia = somatorio / (sfi - 1) ;
+
+             }
+
+              desvioPadrao =  Math.sqrt(variancia).toFixed(2);
+              $('#dp').text(desvioPadrao);
+
+              cv = ((desvioPadrao / media) * 100).toFixed(2);
+              $('#cv').text(cv);
+
+     }
+
+ }
+
+
+ function selecionarTipoDado(tp){
+
+       tipoDado = tp;
+       
+ }
+
+ function calcularMedidaSeparatriz(porcentagem){ //utilizado para calcular as medidas separatrizes
+
+var posicao  =  dadosSplit.length * (porcentagem / 100);
+var separatriz = "vazio";
+
+
+  if(tipoVariavel == "ordinal" || tipoVariavel == "nominal" || tipoVariavel == "discreta"){
+
+
+  
+
+ var facAnterior = 1;
+ var par = (dadosSplit.length % 2) == 0; //checo se o somatório de fi é par ou ímpar
+
+
+
+ for(var i = 0; i < dadosUnicos.length; i++){
+      
+    var facAtual = parseFloat( $('#' + dadosUnicos[i]).find("td:eq(3)").text());
+    $('#resultadoCalculoSeparatriz').text($('#' + dadosUnicos[i]).find("td:eq(0)").text());
+
+
+    if(posicao >= facAnterior && posicao <= facAtual){
+      separatriz = $('#' + dadosUnicos[i]).find("td:eq(0)").text();
+       if(par && ((posicao == facAtual) && ( (i+1) !== dadosSplit.length ))  ){ //se é par pode ter duas posições na separatriz
+
+         separatriz += "-" + $('#' + dadosUnicos[i + 1]).find("td:eq(0)").text();
+
+       }
+
+    }
+
+   
+    facAnterior = parseFloat( $('#' + dadosUnicos[i]).find("td:eq(3)").text()) + 1;
+    
+
+ }
+
+        return separatriz;
+
+  }
+  else{
+     
+     var i = 0;
+     var facAnterior = 0;
+     var fi = 10;
+     
+
+
+     for(var i = 0; i < dadosUnicos.length; i++){
+
+      var facAtual = parseFloat( $('#' + dadosUnicos[i]).find("td:eq(3)").text());
+
+
+       if(posicao >= facAnterior && posicao <= facAtual){
+
+           fi = facAtual;
+           facAnterior = parseFloat( $('#' + dadosUnicos[i]).find("td:eq(3)").text()) + 1;
+           i = parseInt(   $('#' + dadosUnicos[i]).find("td:eq(0)").text().substr(0, $('#' + dadosUnicos[i]).find("td:eq(0)").text().indexOf('|--')));
+           
+       }
+
+
+
+     }
+
+     separatriz = i + (  (posicao - facAnterior ) / fi  ) * agrupamento;
+
+
+        return separatriz;
+
+
+
+  }
+}
+
+
+
     </script>
 
    
 <div class="ui modal">
-    <div class="header">Você escolheu uma variável qualitativa nominal, especifique a ordem</div>
+    <div class="header">Você escolheu uma variável qualitativa ordinal, especifique a ordem</div>
     <div class="content">
       <div id="divOrdemOrdinais">
 
@@ -864,6 +1068,8 @@ else{
       
     </div>
   </div>
+
+
 
 </body>
 
