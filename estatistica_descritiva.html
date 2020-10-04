@@ -544,7 +544,6 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
 
             function calcularMediana(dadosUnicos){
              
-
                $('#mediana').text(calcularMedidaSeparatriz(50));
 
 
@@ -977,14 +976,14 @@ else{
 
  function calcularMedidaSeparatriz(porcentagem){ //utilizado para calcular as medidas separatrizes
 
-var posicao  =  dadosSplit.length * (porcentagem / 100);
+var posicao  =  parseInt(dadosSplit.length * (porcentagem / 100));
 var separatriz = "vazio";
+
 
 
   if(tipoVariavel == "ordinal" || tipoVariavel == "nominal" || tipoVariavel == "discreta"){
 
-
-  
+  alert("posicoa " + posicao);
 
  var facAnterior = 1;
  var par = (dadosSplit.length % 2) == 0; //checo se o somatório de fi é par ou ímpar
@@ -994,12 +993,12 @@ var separatriz = "vazio";
  for(var i = 0; i < dadosUnicos.length; i++){
       
     var facAtual = parseFloat( $('#' + dadosUnicos[i]).find("td:eq(3)").text());
-    $('#resultadoCalculoSeparatriz').text($('#' + dadosUnicos[i]).find("td:eq(0)").text());
 
+ 
 
     if(posicao >= facAnterior && posicao <= facAtual){
       separatriz = $('#' + dadosUnicos[i]).find("td:eq(0)").text();
-       if(par && ((posicao == facAtual) && ( (i+1) !== dadosSplit.length ))  ){ //se é par pode ter duas posições na separatriz
+       if(par && ((posicao == facAtual) && ( (i+1) !== dadosUnicos.length ))  ){ //se é par pode ter duas posições na separatriz
 
          separatriz += "-" + $('#' + dadosUnicos[i + 1]).find("td:eq(0)").text();
 
