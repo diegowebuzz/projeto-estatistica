@@ -81,6 +81,11 @@
 
 
      $("#probabilidade").text(Probabilidade.toFixed(2) + "");
+     $("#media").text( amostra * sucesso);
+     $("#variancia").text( (amostra * sucesso * falha).toFixed(2));
+     $("#dp").text( Math.sqrt(amostra * sucesso * falha).toFixed(2));
+
+
       
 
 
