@@ -30,20 +30,86 @@ conteúdo escondido
     <div> <img class="ui image" src="data-now.png"> </div>
   </div>
  
+  <div>
+   <a href="preferencias.html"> <i class="user icon"></i></a>
   </div>
+  </div>
+
+  <div style="background-color: #2252FF;" class="ui grid">
+    <div class="five wide column"></div>
+
+    <div style="padding:0px; margin:0px;" class="six wide column">
+      
+      <div class="ui image">
+      <img  src="estatistica-mulher.png">
+    </div>
+
+    </div>
+    <div class="five wide column"></div>
+
+  </div>
+
+  <div class="ui raised segment">
+    <p>
+      Olá, usuário, com software você poderá realizar o seus cálculos estatísticos de maneira prática e fácil. Caso precise de ajude 
+      <a href="ajuda.html"> clique aqui </a>
+    </p>
+    </div>
 
   <div class="ui three item menu">
     <a class="item" href="estatistica_descritiva.html" >estatística descritiva</a>
-    <a class="item" href="probabilidade.html">probabilidade</a>
-    <a class="item">correção</a>
+    <div class="ui dropdown item">
+      Probabiliades <i class="dropdown icon"></i>
+      <div class="menu">
+        <a href="uniforme.html" class="item">uniforme</a>
+        <a href="binomial.html" class="item">binomial</a>
+        <a href="normal.html" class="item">normal</a>
+      </div>
+    </div>
+    <a class="item" href="correlacao.html" >correção</a>
   </div>
 
   <div>
-  
+   
+
+    <h1>Histórico (cálculos que você salvou)</h1>
+    <button onclick="limparHistorico()" class="ui primary button"> limpar histórico </button>
+    <div id="historico" class="ui four column grid" >
+
+    </div>
+
   </div>
   </div>
 
   <script>
+
+
+  $().ready(function(){
+
+
+$('.ui.dropdown.item').dropdown();
+
+    var historico = JSON.parse(localStorage.getItem("historico"));
+
+
+     if(localStorage.getItem("historico") != undefined){
+
+        
+         for(var i = 0; i < historico.historico.length; i++){
+
+             $('#historico').append(`<a style='cursor:pointer' href='${historico.historico[i].tipo}.html?indice=` + i + "'" +  "class='ui column'><div>" + historico.historico[i].nome  + "</div><div>" + historico.historico[i].tipo   + "</div></a>");
+
+         }
+        
+
+     }else{
+
+        localStorage.setItem("historico", JSON.stringify({ historico: [] }));
+
+     }
+
+  });
+
 
  function abrir()
 {
@@ -51,6 +117,12 @@ conteúdo escondido
   .sidebar('toggle')
 ;
 ;
+}
+
+function limparHistorico(){
+
+  localStorage.clear();
+
 }
 
   </script>

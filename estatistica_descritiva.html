@@ -21,22 +21,16 @@
         </div>
     </div>
 
-    <div>
-      <div class="ui negative message">
-        <i class="close icon"></i>
-        <div class="header">
-          Aplicativo em desenvolvimento
-        </div>
-        <p>Você deve regarregar a página a cada cálculo
-      </p>
-      </div>
+
+  
+    <div style="text-align: center; padding:10px; background-color: #2252FF; color:white;">
+      <h3>Distribuição Uniforme</h3>
     </div>
+    <div>
+        <div class="ui padded grid">
 
-    <div style="background-color:grey;">
-        <div class="ui padded grid" style="background-image: url('bg.png');">
-
-            <div class="five wide column"></div>
-            <div class="six wide column grey">
+            <div class="four wide column"></div>
+            <div class="eight wide column">
 
                  <div class="item middle aligned content">
               <div class="ui attached message">
@@ -46,19 +40,24 @@
                 <p>Preencha o formulário e clique em calcular</p>
               </div>
 
+
+
                 <form class="ui form attached fluid segment" >
-               <label>Nome da Variável</label>
+
+                
+
+               <label style="color:black; font-weight:bold">Nome da Variável</label>
                <div>
-                <div  class="ui input focus">
-                    <input   value="cores" id="nomeVariavel"  > 
+                <div  class="ui fluid input focus">
+                    <input   value="" id="nomeVariavel"  > 
                 </div>
             </div>
 
                 <div class="p-3">
-                    <label style="font-weight: bold;"> Entre com os dados separados por ponto e vírgula(;) </label>
+                    <label style="font-weight: bold; color:black;"> Entre com os dados separados por ponto e vírgula(;) </label>
                  <div>
-                    <div class="ui input" >
-                        <input value="20;40;50;20;30;10;80;20;10;10;30;90;55;30;20;10;30;10;10;10;10" 
+                    <div class="ui fluid input" >
+                        <input value="" 
                         
                         id="dados" name="dados" data-variation="wide" placeholder="dado um; dado dois; dado um; dado três">
                     </div>
@@ -81,7 +80,7 @@
                     </div>
                     </div>
 
-                    <div class="text-center">
+                    <div class="ui field">
                         <label>amostra</label>
                         <input onclick="selecionarTipoDado('amostra')" name="tipoDado" type="radio">
 
@@ -89,7 +88,7 @@
                         <input onclick="selecionarTipoDado('populacao')"  checked  name="tipoDado" type="radio">
                     </div>
 
-                    <div class="p-2">
+                    <div>
                         <input type="file">
                     </div>
 
@@ -98,12 +97,21 @@
 
                             <button type="button" onclick="limparCampos()" class="ui orange button">limpar campos <i class="fa fa-bar-chart p-1"
                                 aria-hidden="true"></i> </button>
+
+                                <button type="button" onclick="salvar()" class="ui orange button"><i class="save icon"></i> savar pesquisa <i class="fa fa-bar-chart p-1"
+                                  aria-hidden="true"></i> </button>
                 </div>
             </form>
                 </div>
             </div>
 
-            <div class="five wide column"></div>
+            <div class="four wide column">
+
+            
+          
+
+
+            </div>
 
 
 
@@ -196,7 +204,12 @@
 
     </div>
 
-
+    <div class="ui small modal">
+      <div class="header">Você não preencheu todos os campos</div>
+      <div class="scrolling content">
+        <p>Entre com o <b>nome da variável</b> e com os <b>dados separados por vírgula</b>.</p>
+      </div>
+    </div>
 
 
   
@@ -327,6 +340,15 @@ for(var i = 0; i < arrSet.length; i++){
       function calcular(){
 
 
+               if( ($('#nomeVariavel').val() == "" || $('#dados').val() == "")){
+                   
+                $('.small.modal')
+  .modal('show')
+;
+
+                      return false;
+
+               }
 
 
             limparTabela();
@@ -1068,6 +1090,15 @@ var separatriz = "vazio";
   }
 }
 
+function salvar(){
+
+var historico = JSON.parse(localStorage.getItem("historico"));
+
+historico.historico.push({tipo: "uniforme", nome: $('#nomeVariavel').val(), dados: [ 100, 200, "maiorQue", 180 ]});
+
+localStorage.setItem("historico", JSON.stringify(historico));
+
+}
 
 
     </script>
