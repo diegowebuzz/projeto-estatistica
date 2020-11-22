@@ -20,19 +20,33 @@
         </a>
         </div>
     </div>
-    <div style="text-align: center; padding:10px; background-color: #2252FF; color:white;">
+    <div style="text-align: center; margin-bottom:10px; padding:10px; background-color: #2252FF; color:white;">
         <h3>Distribuição Uniforme</h3>
       </div>
-    <div class="ui grid">
+
+      <div id="erro" style="display:none;" class="ui warning message">
+        <div class="header">
+          Preencha os campos obrigatórios
+        </div>
+        Os campos <b>limite inferior do agrupamento</b>, <b>limite superior do agrupamento</b>, <b>intervalo</b> são obrigatórios!
+      </div>
+
+    <div  class="ui grid">
     <div class="four wide column"></div>
 
-    <div class="four wide column">
+    <div class="five wide column">
    
-    <form class="ui form">
-    <div class="field">
-<label>nome (esse campo é usado somente se você quiser salvar o cálculo)</label>
-<input id="nome" class="ui input">
-    </div>
+        <div class="ui attached message">
+            <div class="header">
+              Entre com os dados para fazer o cálculo
+            </div>
+          </div>
+
+    <form class="ui form attached fluid segment">
+
+       
+
+
     <div class="field">
         <label>limite inferior do agrupamento</label>
         <input id="limiteInferior" class="ui input" >
@@ -45,7 +59,7 @@
     <div class="field">
        
         <select class="ui dropdown" id="tipoInputs" onchange="exibirInputs()">
-            <option value="" >selecione</option>
+            <option value="" >selecione o intevalo</option>
             <option value="menorQue">menor que</option>
             <option value="entre">entre</option>
             <option value="maiorQue">maior que</option>
@@ -62,17 +76,22 @@
         </div>
     </div>
     <div>
-         <button type="button" onclick="calcular()" class="ui primary button"> calcular </button>
+         <button type="button" onclick="calcular()" class="ui positive button"> calcular </button>
 
-         <button onclick="salvar()" class="ui primary button" > <i class="save icon"></i> salvar dados</button>
 
     </div>
 </form>
 </div>
-<div class="four wide column">
-  A probabilidade é de <span id="resultado"></span>
+<div class="five wide column">
+  <div style="display:none;" id="painelResultado">
+
+    A probabilidade é de  <span id="resultado"></span>
 
     <canvas id="myChart" width="400" height="400"></canvas>
+
+
+  </div>
+
 
 
 </div>
@@ -89,11 +108,24 @@
         <script>
 
             function  calcular(){
+
+
+                 $('#painelResultado').css('display', 'none');
+        
           
                 var limiteInferior = parseInt( $('#limiteInferior').val());
                 var limiteSuperior = parseInt( $('#limiteSuperior').val());
                  var intervalo = 0;
                 var tipoInputs = $('#tipoInputs').val();
+
+                
+    if($('#limiteInferior').val() == "" || $('#limiteSuperior').val() == "" || $('#tipoInputs').val() == ""  ){
+
+$('#erro').css('display', 'block');
+
+return false;
+
+}
 
 
 if(tipoInputs == "entre"){
@@ -102,6 +134,15 @@ if(tipoInputs == "entre"){
     $('#maiorMenor').css('display', 'none');
 
      intervalo = parseInt($('#entreLimiteSuperior').val()) - parseInt($('#entreLimiteInferior').val());
+
+    if($('#limiteInferior').val() == "" || $('#limiteSuperior').val() == "" || $('#entreLimiteSuperior').val() == "" || $('#entreLimiteInferior').val() == ""  ){
+
+        $('#erro').css('display', 'block');
+      
+      return false;
+
+    }
+
 
 }else{
     $('#entre').css('display', 'none');
@@ -117,14 +158,27 @@ if(tipoInputs == "entre"){
          intervalo = unico - limiteInferior;
 
     }
+
+    if($('#limiteInferior').val() == "" || $('#limiteSuperior').val() == "" || $('#inputUnico').val() == ""  ){
+
+$('#erro').css('display', 'block');
+
+return false;
+
+}
      
 
 
 }
 
+$('#erro').css('display', 'none');
+
+
 
 
                 var resultado = (((1 / (limiteSuperior - limiteInferior)) * intervalo) * 100).toFixed(2) ;
+
+                $('#painelResultado').css("display", "block");
 
                 $('#resultado').text(resultado + "%");
 
@@ -211,15 +265,7 @@ if(tipoInputs == "entre"){
 
             });
 
-            function salvar(){
-
-                var historico = JSON.parse(localStorage.getItem("historico"));
-
-                historico.historico.push({tipo: "uniforme", nome: $('#nome').val(), dados: [ 100, 200, "maiorQue", 180 ]});
-
-                localStorage.setItem("historico", JSON.stringify(historico));
-
-            }
+        
 
         </script>
 

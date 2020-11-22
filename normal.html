@@ -21,11 +21,20 @@
         </div>
     </div>
     
-    <div style="text-align: center; padding:10px; background-color: #2252FF; color:white;">
+    <div style="text-align: center; margin-bottom: 10px; padding:10px; background-color: #2252FF; color:white;">
         <h3>Distribuição Normal</h3>
       </div>
-    <div>
-        <div>
+    <div class="ui grid">
+        <div class="five wide column"></div>
+        <div class="five wide column">
+            <div class="ui attached message">
+                <div class="header">
+                  Entre com os dados para fazer o cálculo
+                </div>
+              </div>
+    
+        <form class="ui form attached fluid segment">
+    
               <div class="ui field">
                   <label>Média</label>
                   <input id="media" class="ui input">
@@ -43,20 +52,24 @@
 
                 </select>
                  <div style="display: none;"  id="containerEntre">
-                    <input id="entreLimiteInferior"> <input id="entreLimiteSuperior">
+                    <input id="entreLimiteInferior" placeholder="limite inferior"> <input id="entreLimiteSuperior" placeholder="limite superior">
                  </div>
                  <div style="display: none;"  id="containerMaiorMenor" >
-                      <input id="entreLimiteSuperior">
+                      <input placeholder="valor" id="entreLimiteSuperior">
                  </div>
             </div>
 
-             <div id="resultado">
-                  0%
-             </div>
+            
 
             <div>
-                <button onclick="calcular()" class="ui primary button">calcular</button>
+                <button type="button" onclick="calcular()" class="ui primary button">calcular</button>
             </div>
+        </form>
+        </div>
+        <div class="four wide column">
+ <div id="resultado">
+                
+             </div>
         </div>
     </div>
     </body>
@@ -124,7 +137,7 @@
             var porcentagemZlimiteInferior = GetZPercent(escoreZLimiteInferior);
             var porcentagemZlimiteSuperior = GetZPercent(escoreZLimiteSuperior);
 
-            $('#resultado').text( (((porcentagemZlimiteInferior + porcentagemZlimiteSuperior) *100).toFixed(2) ))
+            $('#resultado').text( (((porcentagemZlimiteInferior + porcentagemZlimiteSuperior) *100).toFixed(2) ) + "%")
             }else{
               
                 var valorEntreLimiteInferior = parseInt( $('#entreLimiteInferior').val());
@@ -166,7 +179,7 @@
 
 
 
-            $('#resultado').text( ((area * 100).toFixed(2)) + "%");
+            $('#resultado').text( "a probabiliade é de " ((area * 100).toFixed(2)) + "%");
 
         }else{
 

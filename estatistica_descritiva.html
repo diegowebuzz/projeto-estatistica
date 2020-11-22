@@ -24,7 +24,7 @@
 
   
     <div style="text-align: center; padding:10px; background-color: #2252FF; color:white;">
-      <h3>Distribuição Uniforme</h3>
+      <h3>Estatística Descritiva</h3>
     </div>
     <div>
         <div class="ui padded grid">
@@ -98,8 +98,7 @@
                             <button type="button" onclick="limparCampos()" class="ui orange button">limpar campos <i class="fa fa-bar-chart p-1"
                                 aria-hidden="true"></i> </button>
 
-                                <button type="button" onclick="salvar()" class="ui orange button"><i class="save icon"></i> savar pesquisa <i class="fa fa-bar-chart p-1"
-                                  aria-hidden="true"></i> </button>
+                               
                 </div>
             </form>
                 </div>
@@ -1090,15 +1089,7 @@ var separatriz = "vazio";
   }
 }
 
-function salvar(){
 
-var historico = JSON.parse(localStorage.getItem("historico"));
-
-historico.historico.push({tipo: "uniforme", nome: $('#nomeVariavel').val(), dados: [ 100, 200, "maiorQue", 180 ]});
-
-localStorage.setItem("historico", JSON.stringify(historico));
-
-}
 
 
     </script>

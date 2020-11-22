@@ -20,18 +20,33 @@
         </a>
         </div>
     </div>
-    <div style="text-align: center; padding:10px; background-color: #2252FF; color:white;">
+    <div style="text-align: center;  margin-bottom:10px; padding:10px; background-color: #2252FF; color:white;">
         <h3>Distribuição Binomial</h3>
       </div>
+
+      <div id="erro" style="display:none;" class="ui warning message">
+        <div class="header">
+          Preencha os campos obrigatórios
+        </div>
+        Os campos <b>quantidade da amostra</b>, <b>taxa de sucesso</b>, <b>taxa de falha</b> e <b>número de eventos</b> são obrigatórios!
+      </div>
+
     <div class="ui grid">
 
-        <div class="five wide column">
+        <div class="four wide column">
 
         </div>
     
-        <div class="six wide column">
+        <div class="five wide column">
 
-    <form class="ui form" >
+            <div class="ui attached message">
+                <div class="header">
+                  Entre com os dados para fazer o cálculo
+                </div>
+              </div>
+    
+
+    <form class="ui form attached fluid segment" >
 <div class="ui field">
     <label>quantidade da amostra</label>
     <input id="amostra" class="ui input">
@@ -55,14 +70,17 @@
 
 </div>
 
-<div>
-    <div>Probabilidade: <span id="probabilidade"></span> </div>
-    <div>média: <span id="media"></span> </div>
-    <div>desvio padrão:  <span id="dp" ></span> </div>
-    <div>variância: <span id="variancia"></span> </div>
-
-
+<div class="four wide column">
+    <div id="painelResultado">
+        <div>Probabilidade: <span id="probabilidade"></span> </div>
+        <div>média: <span id="media"></span> </div>
+        <div>desvio padrão:  <span id="dp" ></span> </div>
+        <div>variância: <span id="variancia"></span> </div>
+    
+    
+    </div>
 </div>
+
 
 </div>
 
@@ -74,15 +92,33 @@
        var sucesso = $('#sucesso').val();
        var falha = $('#falha').val();
        var eventos = $('#eventos').val();
+        var eventosSplit = eventos.split(';');
+           
+           if(amostra == "" || sucesso == "" || falha == "" || eventos == ""){
+
+               $('#erro').css('display', 'block');
+               return false;
+
+           }
 
 
+var probabilidade = 0;
+           for(let i = 0; i < eventosSplit.length; i++){
+
+             probabilidade +=  (fatorial(amostra, eventosSplit[i]) * (Math.pow(sucesso, eventosSplit[i]))  * Math.pow(falha, (amostra - eventosSplit[i]))) * 100;
+
+           }
+
+
+            alert("f" + fatorial(4, 4));
+              
+           $('#erro').css('display', 'none');
        
-       var Probabilidade =  (fatorial(amostra, eventos) * (Math.pow(sucesso, eventos))  * Math.pow(falha, (amostra - eventos))) * 100;
  
 
 
 
-     $("#probabilidade").text(Probabilidade.toFixed(2) + "");
+     $("#probabilidade").text(probabilidade.toFixed(2) + "%");
      $("#media").text( amostra * sucesso);
      $("#variancia").text( (amostra * sucesso * falha).toFixed(2));
      $("#dp").text( Math.sqrt(amostra * sucesso * falha).toFixed(2));
@@ -101,6 +137,11 @@ $().ready(function() {
 
 
 function fatorial(a, b){
+
+
+       if(a == b){
+           return 1;
+       }
 
       var c  = a - b;
 

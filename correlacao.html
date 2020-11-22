@@ -28,10 +28,7 @@
     <div class="seven wide column">
         <form class="ui form">
 
-            <div class="ui field">
-                <label>título da pesquisa</label>
-                <input id="nome" value="" >
-                </div>
+         
 
             <div class="ui field">
             <label>Entre com os valores de X  </label>
@@ -45,7 +42,6 @@
             </div>
             <div>
                <button type="button" onclick="calcular()" class="ui primary button"> calcular  </button>
-               <button type="button" onclick="salvar()" class="ui primary button"> <i class="save icon"></i> salvar  </button>
 
             </div>
         </form>
@@ -254,15 +250,7 @@ var ctx = document.getElementById('myChart').getContext('2d');
 
  }
 
- function salvar(){
 
-    var historico = JSON.parse(localStorage.getItem("historico"));
-
-historico.historico.push({tipo: "correlacao", nome: $('#nome').val(), dados: [ $('#valoresX').val(), $('#valoresY').val() ]});
-
-localStorage.setItem("historico", JSON.stringify(historico));
-
- }
 
 
  $().ready(function(){

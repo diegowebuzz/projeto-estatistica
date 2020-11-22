@@ -36,7 +36,9 @@ conteúdo escondido
   </div>
 
   <div style="background-color: #2252FF;" class="ui grid">
-    <div class="five wide column"></div>
+    <div class="five wide column">
+       <span style="background-color: white; font-size: 20px; padding:5px"> <i class="help circle icon"></i> Precisa de Ajuda? </span>
+    </div>
 
     <div style="padding:0px; margin:0px;" class="six wide column">
       
@@ -49,17 +51,12 @@ conteúdo escondido
 
   </div>
 
-  <div class="ui raised segment">
-    <p>
-      Olá, usuário, com software você poderá realizar o seus cálculos estatísticos de maneira prática e fácil. Caso precise de ajude 
-      <a href="ajuda.html"> clique aqui </a>
-    </p>
-    </div>
+ 
 
   <div class="ui three item menu">
     <a class="item" href="estatistica_descritiva.html" >estatística descritiva</a>
     <div class="ui dropdown item">
-      Probabiliades <i class="dropdown icon"></i>
+      Probabilidades <i class="dropdown icon"></i>
       <div class="menu">
         <a href="uniforme.html" class="item">uniforme</a>
         <a href="binomial.html" class="item">binomial</a>
@@ -69,16 +66,7 @@ conteúdo escondido
     <a class="item" href="correlacao.html" >correção</a>
   </div>
 
-  <div>
-   
 
-    <h1>Histórico (cálculos que você salvou)</h1>
-    <button onclick="limparHistorico()" class="ui primary button"> limpar histórico </button>
-    <div id="historico" class="ui four column grid" >
-
-    </div>
-
-  </div>
   </div>
 
   <script>
@@ -89,24 +77,7 @@ conteúdo escondido
 
 $('.ui.dropdown.item').dropdown();
 
-    var historico = JSON.parse(localStorage.getItem("historico"));
 
-
-     if(localStorage.getItem("historico") != undefined){
-
-        
-         for(var i = 0; i < historico.historico.length; i++){
-
-             $('#historico').append(`<a style='cursor:pointer' href='${historico.historico[i].tipo}.html?indice=` + i + "'" +  "class='ui column'><div>" + historico.historico[i].nome  + "</div><div>" + historico.historico[i].tipo   + "</div></a>");
-
-         }
-        
-
-     }else{
-
-        localStorage.setItem("historico", JSON.stringify({ historico: [] }));
-
-     }
 
   });
 
@@ -119,11 +90,7 @@ $('.ui.dropdown.item').dropdown();
 ;
 }
 
-function limparHistorico(){
 
-  localStorage.clear();
-
-}
 
   </script>
 
