@@ -20,8 +20,19 @@
         </a>
         </div>
     </div>
-    <div style="text-align: center; margin-bottom:10px; padding:10px; background-color: #2252FF; color:white;">
+    <div style="text-align: center; margin-bottom:10px; padding:10px; background-color: #2185D0; color:white;">
         <h3>Distribuição Uniforme</h3>
+      </div>
+
+      <div style="padding:5px;">
+        <div class="ui breadcrumb">
+          <a  href="index.html" class="section">Home</a>
+          <i class="right angle icon divider"></i>
+          <a class="active section">Probabilidade</a>
+          <i class="right angle icon divider"></i>
+          <a class="active section">Uniforme</a>
+        </div>
+    
       </div>
 
       <div id="erro" style="display:none;" class="ui warning message">
@@ -49,18 +60,18 @@
 
     <div class="field">
         <label>limite inferior do agrupamento</label>
-        <input id="limiteInferior" class="ui input" >
+        <input id="limiteInferior" value="100" class="ui input" >
     </div>
     <div class="field">
         <label>limite superior do agrupamento</label>
-        <input id="limiteSuperior"  class="ui input" >
+        <input id="limiteSuperior" value="180"  class="ui input" >
 
     </div>
     <div class="field">
        
         <select class="ui dropdown" id="tipoInputs" onchange="exibirInputs()">
             <option value="" >selecione o intevalo</option>
-            <option value="menorQue">menor que</option>
+            <option selected value="menorQue">menor que</option>
             <option value="entre">entre</option>
             <option value="maiorQue">maior que</option>
 

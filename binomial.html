@@ -20,8 +20,18 @@
         </a>
         </div>
     </div>
-    <div style="text-align: center;  margin-bottom:10px; padding:10px; background-color: #2252FF; color:white;">
+    <div style="text-align: center;  margin-bottom:10px; padding:10px; background-color: #2185D0; color:white;">
         <h3>Distribuição Binomial</h3>
+      </div>
+      <div style="padding:5px;">
+        <div class="ui breadcrumb">
+          <a  href="index.html" class="section">Home</a>
+          <i class="right angle icon divider"></i>
+          <a class="active section">Probabilidade</a>
+          <i class="right angle icon divider"></i>
+          <a class="active section">Binomial</a>
+        </div>
+    
       </div>
 
       <div id="erro" style="display:none;" class="ui warning message">
@@ -49,19 +59,19 @@
     <form class="ui form attached fluid segment" >
 <div class="ui field">
     <label>quantidade da amostra</label>
-    <input id="amostra" class="ui input">
+    <input id="amostra" value="100" class="ui input">
 </div>
 <div class="ui field">
     <label>taxa de sucesso (p)</label>
-    <input id="sucesso" class="ui input">
+    <input id="sucesso" value="0.1" placeholder="entre com um valor decimal, exemplo 9.0" class="ui input">
 </div>
 <div class="ui field">
     <label>taxa de falha (q) </label>
-    <input id="falha" class="ui input">
+    <input id="falha" value="9.0" placeholder="entre com um valor decimal, exemplo 1.0" class="ui input">
 </div>
 <div class="ui field">
     <label>número de eventos</label>
-    <input id="eventos" class="ui input">
+    <input id="eventos" value="2"  class="ui input">
 </div>
 <div>
     <button type="button" onclick="calcular()" class="ui primary button">calcular</button>
@@ -70,12 +80,12 @@
 
 </div>
 
-<div class="four wide column">
-    <div id="painelResultado">
-        <div>Probabilidade: <span id="probabilidade"></span> </div>
-        <div>média: <span id="media"></span> </div>
-        <div>desvio padrão:  <span id="dp" ></span> </div>
-        <div>variância: <span id="variancia"></span> </div>
+<div class="four wide column" id="painelResultado" style="display:none">
+    <div style="font-size: 20px;"  >
+        <div> <b> Probabilidade: </b><span id="probabilidade"></span> </div>
+        <div> <b> média:</b> <span id="media"></span> </div>
+        <div> <b> desvio padrão:</b>  <span id="dp" ></span> </div>
+        <div> <b> variância:</b> <span id="variancia"></span> </div>
     
     
     </div>
@@ -123,7 +133,7 @@ var probabilidade = 0;
      $("#dp").text( Math.sqrt(amostra * sucesso * falha).toFixed(2));
 
 
-      
+      $('#painelResultado').css('display', 'block');
 
 
 

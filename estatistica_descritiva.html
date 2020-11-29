@@ -5,6 +5,7 @@
 
 
 
+
     <head>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="Semantic-UI-CSS-master/semantic.min.css">
@@ -21,11 +22,22 @@
         </div>
     </div>
 
+ 
 
   
-    <div style="text-align: center; padding:10px; background-color: #2252FF; color:white;">
+    <div style="text-align: center; padding:10px; background-color: #2185D0; color:white;">
       <h3>Estatística Descritiva</h3>
     </div>
+
+    <div style="padding:5px;">
+    <div class="ui breadcrumb">
+      <a  href="index.html" class="section">Home</a>
+      <i class="right angle icon divider"></i>
+      <a class="active section">Estatística Descritiva</a>
+      
+    </div>
+
+  </div>
     <div>
         <div class="ui padded grid">
 
@@ -34,10 +46,8 @@
 
                  <div class="item middle aligned content">
               <div class="ui attached message">
-                <div class="header">
-                  Estatística descritiva
-                </div>
-                <p>Preencha o formulário e clique em calcular</p>
+               
+                <p>Entre com os dados para realizar o cálculo</p>
               </div>
 
 
@@ -49,7 +59,7 @@
                <label style="color:black; font-weight:bold">Nome da Variável</label>
                <div>
                 <div  class="ui fluid input focus">
-                    <input   value="" id="nomeVariavel"  > 
+                    <input   value="dados pré-populados" id="nomeVariavel"  > 
                 </div>
             </div>
 
@@ -57,9 +67,9 @@
                     <label style="font-weight: bold; color:black;"> Entre com os dados separados por ponto e vírgula(;) </label>
                  <div>
                     <div class="ui fluid input" >
-                        <input value="" 
+                        <input 
                         
-                        id="dados" name="dados" data-variation="wide" placeholder="dado um; dado dois; dado um; dado três">
+                        id="dados" name="dados" value="10;20;30;40;50;60;20;30" data-variation="wide" placeholder="dado um; dado dois; dado um; dado três">
                     </div>
                 </div>
 
@@ -116,9 +126,7 @@
 
         </div>
     </div>
-    <div>
-      <span> <b> Desvio Padrão:</b></span> <span id="dp"></span> <span><b>Coeficiente de Variação:</b></span> <span id="cv"></span>
-    </div>
+   
     <div id="resultado" class="ui padded grid" style="display: none;">
  
       <div class="seven wide column">
@@ -141,40 +149,13 @@
               <div class="ui grid">
                   <div class="eight wide column">
 
-                    <div>
-                      <div class="ui small header"> 
-                          medidas de tendência central
-                      </div>
-                      <div>
-                       <div> <b>moda: </b>  <span id="moda"></span></div> 
-                       <div> <b>média: </b>  <span id="media">não possui média</span></div> 
-                       <div>  <b>mediana: </b>  <span id="mediana"></span></div> 
-    
-    
-                      </div>
-                  </div>
+                  
 
                   </div>
                   <div class="eight wide column" >
-                  <div>medidas separatrizes</div>
+               
 
-                    <div>
-                      <select id="medidaSeparatriz" class="ui dropdown">
-                        <option value="porcentil">porcentil</option>
-                        <option value="decil">decil</option>
-                        <option value="quartil" >quartil</option>
                   
-                        <option value="quintil">quintil</option>
-                  
-                      </select> 
-                    </div>
-
-                    <div>
-                      <input  max="100" min="0"  id="range" type="range"> 
-                      <span id="valorAtualRane"></span>
-                      <div id="resultadoCalculoSeparatriz"></div>
-
-                    </div>
                    
                   </div>
               </div>
@@ -187,15 +168,52 @@
 
       <div class="seven wide column">
 
-        <div>
+        <div class="ui grid">
 
-            <div class="ui large header" >Visualização Gráfica</div>
+          <div class="eight wide column">
+        <div style="font-size: 20px;">
+        <div>
+         <b> desvio padrão:</b></span> <span id="dp"> <span><b>Coeficiente de Variação:</b></span> 
+        </div>
+        <div>
+          <b>coeficiente de variação </b> <span id="cv"></span>
+        </div>
+        <div> <b>moda: </b>  <span id="moda"></span></div> 
+        <div> <b>média: </b>  <span id="media">não possui média</span></div> 
+        <div>  <b>mediana: </b>  <span id="mediana"></span></div> 
+
+        <div>
+        </div>
     
-            <canvas  id="myChart"></canvas>
     
         
     
         </div>
+      </div>
+      <div class="eight wide column">
+        <div class="ui segment">
+        <div>escolha a medida separatriz e mova a barra </div>
+
+        <div>
+          <select id="medidaSeparatriz" class="ui fluid dropdown">
+            <option value="porcentil">porcentil</option>
+            <option value="decil">decil</option>
+            <option value="quartil" >quartil</option>
+      
+            <option value="quintil">quintil</option>
+      
+          </select> 
+        </div>
+        <div>
+          <input class="ui input"  max="100" min="0" style="width:100%; margin-top:10px"   id="range" type="range"> 
+         <b> valor:</b>  <span id="valorAtualRane"> </span>
+         <b> resultado: </b><span id="resultadoCalculoSeparatriz"></span>
+
+        </div>
+        </div>
+      </div>
+      </div>
+      <canvas  id="myChart"></canvas>
 
       </div>
 
@@ -429,6 +447,7 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
            }
 
    
+           window.scrollTo(0,document.body.scrollHeight);
 
      }
 
@@ -474,15 +493,18 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
                 for(var j = 0; j < dadosSplit.length; j++  )
          {
 
-             valorCor += 40;
+             valorCor += 20;
          var valor =  $('#' + dadosSplit[j]).find("td:eq(0)").text();
          var valorValor = $('#' + dadosSplit[j]).find("td:eq(1)").text();
          var labelVariavel = $('#' + dadosSplit[j]).find("td:eq(0)").text();
               nomesVariaveis.push(valor);
               valoresVariaveis.push(valorValor);
               labelsVariaveis.push(labelVariavel);
-              cores.push('rgb(' + '255' + ', '  + valorCor +   ', 132)');
+              
+              cores = ["green", "blue", "red", "yellow", "pink", "orange", "purple", "green", "brown"];
 
+     
+            console.log(cores);
 
               
               }
@@ -494,14 +516,18 @@ if(tipoVariavel == 'continua' || tipoVariavel == 'discreta'){
     data: {
         datasets: [{
             label: 'Bar Dataset',
-            data: valoresVariaveis
+            data: valoresVariaveis,
+            backgroundColor: cores,
+
         }],
         labels: labelsVariaveis,
-        backgroundColor: ["red", "blue", "green"], 
+        backgroundColor: 'rgb(255, 99, 132)',
 
         borderColor:cores
 
     },
+
+
 
      options: {
     scales: {
